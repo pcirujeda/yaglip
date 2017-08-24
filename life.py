@@ -19,7 +19,7 @@ from pygame.locals import *
 # Core function for modelling game rules given a state matrix
 def live( state ):
     # Rule 2
-    newstate = state.copy()
+    new_state = state.copy()
 
     rows, cols = state.shape
     for r in range( rows ):
@@ -29,12 +29,12 @@ def live( state ):
 
             # Rules 1 and 3
             if state[ r, c ] and ( neighbours < 2 or neighbours > 3 ):
-                newstate[ r, c ] = 0
+                new_state[ r, c ] = 0
             # Rule 4
             elif not state[ r, c] and neighbours == 3:
-                newstate[ r, c ] = 1
+                new_state[ r, c ] = 1
 
-    return( newstate )
+    return( new_state )
 
 def setup_game( width, height, tilesize, board ):
     initial_life = numpy.zeros( (height, width), dtype=numpy.byte )
@@ -48,11 +48,12 @@ def setup_game( width, height, tilesize, board ):
                 if event.key == pygame.K_RETURN:
                     done = True
 
+            # Mark/unmark grid cell with mouse interaction
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 column = pos[0] // tilesize
                 row = pos[1] // tilesize
-                initial_life[ row ][ column ] = 1
+                initial_life[ row ][ column ] = not initial_life[ row ][ column ]
 
         plot( initial_life, board, tilesize)
 
