@@ -36,6 +36,28 @@ def live( state ):
 
     return( newstate )
 
+def setup_game( width, height, tilesize, board ):
+    initial_life = numpy.zeros( (height, width), dtype=numpy.byte )
+
+    done = False
+    while done == False:
+        for event in pygame.event.get():
+
+            # Capture mouse events until return key is pressed
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    done = True
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                column = pos[0] // tilesize
+                row = pos[1] // tilesize
+                initial_life[ row ][ column ] = 1
+
+        plot( initial_life, board, tilesize)
+
+    return initial_life
+
 def plot( state, board, tilesize ):
     rows, cols = state.shape
     for r in range( rows ):
@@ -48,15 +70,16 @@ def plot( state, board, tilesize ):
     pygame.display.update()
 
 # Game constraints
-tilesize = 3
+tilesize = 5
 width = 120
 height = 120
 
-life = numpy.zeros( (height, width), dtype=numpy.byte )
-life[2, 1:4] = 1
-
+# Initialize pygame assets
 pygame.init()
 board = pygame.display.set_mode( ( width*tilesize, height*tilesize ) )
+
+# Initialize game conditions
+life = setup_game( width, height, tilesize, board )
 
 # Life evolution
 while True:
