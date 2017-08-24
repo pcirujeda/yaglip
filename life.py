@@ -12,6 +12,9 @@
 # The initial pattern constitutes the seed of the system. The first generation is created by applying the above rules simultaneously to every cell in the seed-births and deaths occur simultaneously, and the discrete moment at which this happens is sometimes called a tick (in other words, each generation is a pure function of the preceding one). The rules continue to be applied repeatedly to create further generations.
 
 import numpy
+import pygame
+import time, sys
+from pygame.locals import *
 
 # Core function for modelling game rules given a state matrix
 def live( state ):
@@ -33,11 +36,37 @@ def live( state ):
 
     return( newstate )
 
+def plot( state, board, tilesize ):
+    rows, cols = state.shape
+    for r in range( rows ):
+        for c in range( cols ):
+            if state[ r, c ]:
+                pygame.draw.rect( board, ( 0,0,0 ), ( c*tilesize, r*tilesize, tilesize, tilesize ) )
+            else:
+                pygame.draw.rect( board, ( 255,255,255 ), ( c*tilesize, r*tilesize, tilesize, tilesize ) )
+
+    pygame.display.update()
+
 # Game constraints
-life = numpy.zeros( (6, 6), dtype=numpy.byte )
-life[2, 1:5] = 1
+tilesize = 3
+width = 120
+height = 120
+
+life = numpy.zeros( (height, width), dtype=numpy.byte )
+life[2, 1:4] = 1
+
+pygame.init()
+board = pygame.display.set_mode( ( width*tilesize, height*tilesize ) )
 
 # Life evolution
-for i in range( 100 ):
-    print( life )
+while True:
+
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+
+    time.sleep( 0.1 )
+
+    plot( life, board, tilesize)
     life = live( life )
