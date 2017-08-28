@@ -13,7 +13,7 @@
 
 import numpy
 import pygame
-import time, sys
+import time, sys, argparse
 from pygame.locals import *
 
 # Core function for modelling game rules given a state matrix
@@ -71,9 +71,15 @@ def plot( state, board, tilesize ):
     pygame.display.update()
 
 # Game constraints
-tilesize = 5
-width = 120
-height = 120
+parser = argparse.ArgumentParser( description='yaglib' )
+parser.add_argument( '--cellsize', help='Pixel size for each grid cell', dest='cellsize', action='store', type=int, default=5 )
+parser.add_argument( '--gridwidth', help='Width for cells grid', dest='gridwidth', action='store', type=int, default=120 )
+parser.add_argument( '--gridheight', help='Height for celss grid', dest='gridheight', action='store', type=int, default=120 )
+args = parser.parse_args()
+
+tilesize = args.cellsize
+width = args.gridwidth
+height = args.gridheight
 
 # Initialize pygame assets
 pygame.init()
